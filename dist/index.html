@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=/vue_picture_clipping/dist/favicon.ico><title>vue_picture_clipping</title><link href=/vue_picture_clipping/dist/css/app.78fcaa06.css rel=preload as=style><link href=/vue_picture_clipping/dist/js/app.0620e2e4.js rel=preload as=script><link href=/vue_picture_clipping/dist/js/chunk-vendors.81acf317.js rel=preload as=script><link href=/vue_picture_clipping/dist/css/app.78fcaa06.css rel=stylesheet></head><body><noscript><strong>We're sorry but vue_picture_clipping doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><script>~function() {
+        function computed() {
+          let HTML = document.documentElement,
+              deviceW = HTML.clientWidth,
+              designW = 750,
+              ratio = deviceW / designW * 100;
+          if (deviceW >= designW) {
+            ratio = 100;
+          }
+          HTML.style.fontSize = ratio + 'px';
+        }
+
+        computed();
+        window.addEventListener('resize', computed);
+      }()</script><div id=app></div><script src=/vue_picture_clipping/dist/js/chunk-vendors.81acf317.js></script><script src=/vue_picture_clipping/dist/js/app.0620e2e4.js></script></body></html>
