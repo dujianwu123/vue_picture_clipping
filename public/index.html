@@ -11,6 +11,23 @@
     <noscript>
       <strong>We're sorry but vue_picture_clipping doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+    <script>
+      ~function() {
+        function computed() {
+          let HTML = document.documentElement,
+              deviceW = HTML.clientWidth,
+              designW = 750,
+              ratio = deviceW / designW * 100;
+          if (deviceW >= designW) {
+            ratio = 100;
+          }
+          HTML.style.fontSize = ratio + 'px';
+        }
+
+        computed();
+        window.addEventListener('resize', computed);
+      }()
+    </script>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>

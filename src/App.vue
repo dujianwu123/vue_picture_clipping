@@ -1,28 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <clip-image></clip-image>
+    <!-- <div class="resultBox" @click="change" v-else>
+      <img :src="data" alt />
+    </div> -->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+/* IMPORT CSS */
+import "./assets/reset.min.css";
+import "./assets/basic.less";
 
+/* IMPORT COMPONENT */
+import ClipImage from "./components/ClipImage.vue";
 export default {
-  name: 'app',
   components: {
-    HelloWorld
+    ClipImage
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style lang="less">
+.resultBox {
+  padding: 0.2rem;
+}
+
+.resultBox img {
+  display: block;
+  box-sizing: border-box;
+  width: 7.1rem;
+  height: 7.1rem;
+  border: 0.02rem solid #ddd;
 }
 </style>
