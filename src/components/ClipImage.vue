@@ -1,6 +1,10 @@
 <template>
   <div class="clipImageBox">
-    <div class="canvasBox" @touchstart="startFunc" @touchmove="moveFunc">
+    <div
+      class="canvasBox"
+      @touchstart="startFunc"
+      @touchmove="moveFunc"
+    >
       <canvas :width="CW" :height="CH" ref="canvas" />
       <div
         class="mark"
@@ -14,7 +18,7 @@
       <button @click="clickFunc">选择图片</button>
       <button @click="scaleFunc(1)">放大</button>
       <button @click="scaleFunc(0)">缩小</button>
-      <button>保存图片</button>
+      <button @click="saveFunc">保存图片</button>
     </div>
   </div>
 </template>
@@ -93,6 +97,40 @@ export default {
         this.IH -= n2;
       }
       this.drawImage();
+    },
+    startFunc(ev) {
+      if (!this.IMAGE) return ;
+      let point = ev.changedTouches[0];
+      this.startX = point.clientX;
+      this.startY = point.clientY;
+    },
+    moveFunc(ev) {
+      if (!this.IMAGE) return ;
+      let point = ev.changedTouches[0];
+      this.changeX = point.clientX - this.startX;
+      this.changeY = point.clientY - this.startY;
+
+      if (Math.abs(this.changeX) > 10 || Math.abs(this.chageY) > 10) {
+        this.IL += this.changeX;
+        this.IT += this.changeY;
+        this.drawImage();
+        this.startX = point.clientX;
+        this.startY = point.clientY; 
+      }
+    },
+    saveFunc() {
+      if (!this.IMAGE) return;
+      // 获取指定区域的像素信息
+      let imageData = this.CTX.getImageData(this.ML, this.MT, this.MW, this.MH);
+      // 创建新的画布
+      let canvas2 = document.createElement("canvas"),
+        canvas2CTX = canvas2.getContext("2d");
+      canvas2.width = this.MW;
+      canvas2.height = this.MH;
+      // 把像素信息放置到画布中
+      canvas2CTX.putImageData(imageData, 0, 0, 0, 0, this.MW, this.MH);
+      // 把画布中的内容生成图片的BASE64
+      this.$emit("saveImage", canvas2.toDataURL("image/png"));
     },
     drawImage() {
       // 创建2D渲染画布
