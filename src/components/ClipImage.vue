@@ -1,16 +1,19 @@
 <template>
   <div class="clipImageBox">
-    <div class="canvasBox" >
-      <canvas ref="canvas"></canvas>
+    <div class="canvasBox" @touchstart="startFunc" @touchmove="moveFunc">
+      <canvas :width="CW" :height="CH" ref="canvas" />
       <div
-        class="mark"></div>
+        class="mark"
+        v-show="ISMARK"
+        :style="{width:MW+'px',height:MH+'px',left:ML+'px',top:MT+'px'}"
+      />
     </div>
 
     <div class="buttonBox">
-      <input type="file" accept="image/*" class="file" ref="file"/>
-      <button>选择图片</button>
-      <button>放大</button>
-      <button>缩小</button>
+      <input type="file" accept="image/*" class="file" ref="file" @change="changeFunc" />
+      <button @click="clickFunc">选择图片</button>
+      <button @click="scaleFunc(1)">放大</button>
+      <button @click="scaleFunc(0)">缩小</button>
       <button>保存图片</button>
     </div>
   </div>
@@ -18,7 +21,88 @@
 
 <script>
 export default {
-  
+  data() {
+    let winW = document.documentElement.clientWidth,
+      font = parseFloat(document.documentElement.style.fontSize),
+      canvasW = winW - 0.4 * font,
+      markW = canvasW * 0.7;
+    return {
+      CW: canvasW, // canvas宽度
+      CH: canvasW, // canvas高度 正方形
+      MH: markW, // mark 宽高
+      MW: markW,
+      ML: (canvasW - markW) / 2, // mark的位置
+      MT: (canvasW - markW) / 2,
+      IW: 0, // 上传图片的宽高和位置
+      IH: 0,
+      IL: 0,
+      IT: 0,
+      ISMARK: false //是否显示mark
+    };
+  },
+  methods: {
+    clickFunc() {
+      this.$refs.file.click();
+    },
+    changeFunc() {
+      // 选择图片
+      this.ISMARK = true;
+      let file = this.$refs.file.files[0]; // 获取选中图片
+      if (!file) return;
+      // 先基于FileReader 进行文件的读取
+      let fileExample = new FileReader();
+      fileExample.readAsDataURL(file);
+      fileExample.onload = ev => {
+        // 创建的新图片
+        this.IMAGE = new Image();
+        // 获取图片base64
+        this.IMAGE.src = ev.target.result;
+
+        this.IMAGE.onload = _ => {
+          this.IW = this.IMAGE.width;
+          this.IH = this.IMAGE.height;
+          // 重新按照比例计算宽高
+          let n = 1;
+          if (this.IW > this.IH) {
+            n = this.IW / this.CW;
+            this.IW = this.CW;
+            this.IH = this.IH / n;
+          } else {
+            n = this.IH / this.CH;
+            this.IH = this.CH;
+            this.IW = this.IW / n;
+          }
+          this.IL = (this.CW - this.IW) / 2;
+          this.IT = (this.CH - this.IH) / 2;
+          // 绘制图片
+          this.drawImage();
+        };
+      };
+    },
+    scaleFunc(flag) {
+      if (!this.IMAGE) return;
+      // 算出宽高比  保证不变形
+      let n = this.IW / this.IH,
+        n1 = 20,
+        n2 = n1 / n;
+      if (flag) {
+        this.IW += n1;
+        this.IH += n2;
+      } else {
+        this.IW -= n1;
+        this.IH -= n2;
+      }
+      this.drawImage();
+    },
+    drawImage() {
+      // 创建2D渲染画布
+      this.CTX = this.$refs.canvas.getContext("2d");
+      // 清空画布
+      this.CTX.clearRect(0, 0, this.CW, this.CH);
+      // 绘制图片
+      this.CTX.drawImage(this.IMAGE, this.IL, this.IT, this.IW, this.IH);
+    }
+  }
 };
 
 /*
